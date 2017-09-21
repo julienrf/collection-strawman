@@ -257,14 +257,14 @@ trait IterableOps[+A, +CC[X], +C] extends Any {
   /** A view representing the elements of this collection. */
   def view: View[A] = View.fromIterator(toIterable.iterator())
 
-  /** Given a collection factory `fi`, convert this collection to the appropriate
+  /** Given a collection factory `factory`, convert this collection to the appropriate
     * representation for the current element type `A`. Example uses:
     *
     *      xs.to(List)
     *      xs.to(ArrayBuffer)
     *      xs.to(BitSet) // for xs: Iterable[Int]
     */
-  def to[C1](f: CanBuild[A, C1]): C1 = f.fromSpecificIterable(toIterable)
+  def to[C1](factory: Factory[A, C1]): C1 = factory.fromSpecificIterable(toIterable)
 
   /** Convert collection to array. */
   def toArray[B >: A: ClassTag]: Array[B] =
