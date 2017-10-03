@@ -91,6 +91,10 @@ The following operations are provided:
 - `Seq#intersperse`
 - `Map#zipByKeyWith`
 
+The following collections are provided:
+
+- `NonEmpty`
+
 ## Roadmap
 
 1. September 2017: release targeting Scala 2.13 and Dotty.
