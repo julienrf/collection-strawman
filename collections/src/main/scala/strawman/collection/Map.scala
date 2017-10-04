@@ -14,7 +14,7 @@ trait Map[K, +V] extends Iterable[(K, V)] with MapOps[K, V, Map, Map[K, V]] {
 }
 
 /** Base Map implementation type */
-trait MapOps[K, +V, +CC[X, Y] <: MapOps[X, Y, CC, _], +C <: MapOps[K, V, CC, C]]
+trait MapOps[K, +V, +CC[X, Y] <: MapOps[X, Y, CC, _], +C]
   extends IterableOps[(K, V), Iterable, C]
     with PartialFunction[K, V]
     with Equals {
