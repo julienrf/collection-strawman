@@ -93,6 +93,12 @@ The following operations are provided:
 - `Map`
     - `zipByKey` / `join` / `zipByKeyWith`
     - `mergeByKey` / `fullOuterJoin` / `mergeByKeyWith` / `leftOuterJoin` / `rightOuterJoin`
+- `mutable.Map`
+    - `updateWith`
+
+The following collections are provided:
+
+- `mutable.MultiSet`
 
 ## Roadmap
 
