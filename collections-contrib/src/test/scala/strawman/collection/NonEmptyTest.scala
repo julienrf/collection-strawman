@@ -8,7 +8,7 @@ class NonEmptyTest {
   @Test
   def nonEmptiness(): Unit = {
     val xs = List(1, 2, 3)
-    val nel = NonEmpty(0, xs)
+    val nel = NonEmpty.cons(0, xs)
 
     Assert.assertEquals(4, nel.size)
     // This partial method is now guaranteed to be total!
@@ -18,9 +18,6 @@ class NonEmptyTest {
     // we apply structure preserving operations or when we grow the collection
     val nel2 = nel.map(x => x.toString)
     val nel2T: NonEmpty[String, List[String]] = nel2
-
-    val nel3 = nel.flatMap(x => Set(x, x * x))
-    val nel3T: NonEmpty[Int, List[Int]] = nel3
 
     val nel4 = nel ++ Nil
     val nel4T: NonEmpty[Int, List[Int]] = nel4
@@ -42,14 +39,14 @@ class NonEmptyTest {
 
     // Also works with different “kinds” of collections
     val ys = immutable.SortedSet(1, 2, 3)
-    val nes = NonEmpty(4, ys)
+    val nes = NonEmpty.cons(4, ys)
     val nesT: NonEmpty[Int, immutable.SortedSet[Int]] = nes
 
     val nes2 = nes + 0
     val nes2T: NonEmpty[Int, immutable.SortedSet[Int]] = nes2
 
     val zs = immutable.SortedMap(1 -> "a", 2 -> "b")
-    val nem = NonEmpty(3 -> "c", zs)
+    val nem = NonEmpty.cons(3 -> "c", zs)
     val nemT: NonEmpty[(Int, String), immutable.SortedMap[Int, String]] = nem
 
     val nem2 = nem + (4 -> "d")
@@ -59,6 +56,29 @@ class NonEmptyTest {
     // available in `NonEmpty`
     Assert.assertEquals(Set(1, 3, 4), nes - 2)
     Assert.assertEquals(2, nel.indexOf(2))
+  }
+
+  @Test
+  def factory(): Unit = {
+    val nel = NonEmpty[List[Int]](1, 2, 3)
+    val nelT: NonEmpty[Int, List[Int]] = nel
+    Assert.assertEquals(1 :: 2 :: 3 :: Nil, nel.coll)
+
+    val nem = NonEmpty[Map[Int, Boolean]](1 -> true, 2 -> true, 3 -> false)
+    val nemT: NonEmpty[(Int, Boolean), Map[Int, Boolean]] = nem
+    Assert.assertEquals(Map(1 -> true, 2 -> true, 3 -> false), nem.coll)
+
+    val nebs = NonEmpty[immutable.BitSet](1, 2, 3)
+    val nebsT: NonEmpty[Int, immutable.BitSet] = nebs
+    Assert.assertEquals(immutable.BitSet(1, 2, 3), nebs.coll)
+
+    val ness = NonEmpty[immutable.TreeSet[Int]](1, 2, 3)
+    val nessT: NonEmpty[Int, immutable.TreeSet[Int]] = ness
+    Assert.assertEquals(immutable.TreeSet(1, 2, 3), ness.coll)
+
+    val nesm = NonEmpty[immutable.SortedMap[Int, Boolean]](1 -> true, 2 -> true, 3 -> false)
+    val nesmT: NonEmpty[(Int, Boolean), immutable.SortedMap[Int, Boolean]] = nesm
+    Assert.assertEquals(immutable.SortedMap(1 -> true, 2 -> true, 3 -> false), nesm.coll)
   }
 
 }

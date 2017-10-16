@@ -270,6 +270,7 @@ trait SpecificIterableFactory[-A, +C] extends Factory[A, C] {
   def apply(xs: A*): C = fromSpecific(View.Elems(xs: _*))
   def fill(n: Int)(elem: => A): C = fromSpecific(View.Fill(n)(elem))
   def newBuilder(): Builder[A, C]
+  implicit def specificIterableFactory: Factory[A, C] = this
 }
 
 /** Factory methods for collections of kind `* −> * -> *` */

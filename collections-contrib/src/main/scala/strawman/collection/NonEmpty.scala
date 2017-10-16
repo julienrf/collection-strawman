@@ -19,9 +19,6 @@ final class NonEmpty[+A, C <: Iterable[A]] private (val coll: C)
   def map[B, C2 <: Iterable[B]](f: A => B)(implicit bf: BuildFrom[C, B, C2]): NonEmpty[B, C2] =
     new NonEmpty[B, C2](bf.fromSpecificIterable(coll)(coll.toIterable.map(f)))
 
-  def flatMap[B, C2 <: Iterable[B]](f: A => IterableOnce[B])(implicit bf: BuildFrom[C, B, C2]): NonEmpty[B, C2] =
-    new NonEmpty[B, C2](bf.fromSpecificIterable(coll)(coll.toIterable.flatMap(f)))
-
   def concat[B >: A, C2 <: Iterable[B]](that: Iterable[B])(implicit bf: BuildFrom[C, B, C2]): NonEmpty[B, C2] =
     new NonEmpty[B, C2](bf.fromSpecificIterable(coll)(coll.toIterable ++ that))
 
@@ -84,7 +81,29 @@ object NonEmpty {
     * @tparam A Type of the elements
     * @tparam C Type of the wrapped collection
     */
-  def apply[A, C <: Iterable[A]](elem: A, coll: C)(implicit bf: BuildFrom[C, A, C]): NonEmpty[A, C] =
-    new NonEmpty[A, C](bf.fromSpecificIterable(coll)(View.Prepend(elem, coll.toIterable)))
+  def cons[A, C <: Iterable[A]](elem: A, coll: C)(implicit bf: BuildFrom[C, A, C]): NonEmpty[A, C] =
+    coll match {
+      // Take advantage of `Seq` to not copy the entire tail
+      case seq: Seq[A] => new NonEmpty[A, C]((elem +: seq).asInstanceOf[C])
+      case _ => new NonEmpty[A, C](bf.fromSpecificIterable(coll)(View.Prepend(elem, coll.toIterable)))
+    }
+
+  /**
+    * Example {{{
+    *   val xs = NonEmpty[List[Int]](1, 2, 3)
+    * }}}
+    *
+    * @return A non empty collection of type `C`
+    * @tparam C Type of the non empty collection
+    */
+  def apply[C]: NonEmptyBuilder[C] = new NonEmptyBuilder[C]
+
+  /**
+    * Internal class whose purpose is only to partially apply the type parameter `C`
+    */
+  class NonEmptyBuilder[C] {
+    def apply[A, C1 <: C with Iterable[A]](elem: A, elems: A*)(implicit factory: Factory[A, C1]): NonEmpty[A, C1] =
+      new NonEmpty[A, C1](factory.fromSpecific(elem +: elems.toStrawman))
+  }
 
 }
