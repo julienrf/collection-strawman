@@ -24,13 +24,7 @@ trait Map[K, +V]
       (that canEqual this) &&
       (this.size == that.size) && {
         try {
-          this forall {
-            case (k, v) => that.get(k) match {
-              case Some(`v`) =>
-                true
-              case _ => false
-            }
-          }
+          this forall { case (k, v) => that.get(k).contains(v) }
         } catch {
           case _: ClassCastException => false
         }
@@ -44,7 +38,7 @@ trait Map[K, +V]
 }
 
 /** Base Map implementation type */
-trait MapOps[K, +V, +CC[X, Y] <: MapOps[X, Y, CC, _], +C <: MapOps[K, V, CC, C]]
+trait MapOps[K, +V, +CC[X, Y] <: MapOps[X, Y, CC, _], +C]
   extends IterableOps[(K, V), Iterable, C]
     with PartialFunction[K, V]
     with Equals {
