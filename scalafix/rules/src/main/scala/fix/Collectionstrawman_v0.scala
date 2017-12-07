@@ -29,28 +29,18 @@ case class Collectionstrawman_v0(index: SemanticdbIndex)
   )
 
   def replaceExtensionMethods(ctx: RuleCtx): Patch = {
-    val visited = collection.mutable.Set.empty[String]
     val toImport = for {
       r <- ctx.index.names
       in = r.symbol.normalized
       out <- unimports.get(in).toList
-      if !visited(out.name)
     } yield {
-      visited += out.name
       val name = in.name
-      def visiting(s: String): List[String] =
-        if (!visited(s)) {
-          visited += s
-          s :: Nil
-        } else Nil
-      val names = visiting(name) ::: additionalUnimports.get(name)
-        .fold(List.empty[String])(visiting)
-      if (names.isEmpty) ctx.addGlobalImport(out)
-      else {
+      val names = name :: additionalUnimports.get(name)
+        .fold(List.empty[String])(_ :: Nil)
         ctx.addGlobalImport(out) +
-          ctx.addGlobalImport(
-            Importer(q"scala.Predef", names.map(n => Importee.Unimport(Name(n)))))
-      }
+          names.map { n =>
+            ctx.addGlobalImport(Importer(q"scala.Predef", Importee.Unimport(Name(n)) :: Nil))
+          }.asPatch
     }
     val predefUnderscore =
       if (toImport.isEmpty) Patch.empty
