@@ -76,7 +76,7 @@ object Bencharts {
         )
 
         ImageIO.write(
-          chart.createBufferedImage(800, 600),
+          chart.createBufferedImage(1152, 864),
           "png",
           targetDir / s"$benchmark.png"
         )
