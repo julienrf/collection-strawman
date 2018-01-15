@@ -6,7 +6,7 @@ import java.lang.String
 import scala.{Any, Array, Boolean, Char, Either, Int, Left, Nothing, Option, StringContext, Unit}
 import scala.Predef.{assert, charWrapper, identity, println, $conforms}
 import collection._
-import collection.immutable.{ImmutableArray, List, Nil, Range, Vector, Stream}
+import collection.immutable.{ImmutableArray, LazyList, List, Nil, Range, Vector, Stream}
 import collection.mutable.{ArrayBuffer, ListBuffer}
 import org.junit.Test
 import org.junit.Assert._
@@ -452,22 +452,6 @@ class StrawmanTest {
     println(xs17.to(List))
     println(xs19)
     println(xs19.to(List))
-
-    // laziness may differ in dotty, so test only that we are as lazy as Stream
-    import scala.collection.{immutable => old}
-    lazy val fibsStream: Stream[Int] = 0 #:: 1 #:: fibsStream.zip(fibsStream.tail).map { n => n._1 + n._2 }
-    if(old.List(0,1,1,2)==fibsStream.take(4).toList) {
-      lazy val fibs: LazyList[Int] = 0 #:: 1 #:: fibs.zip(fibs.tail).map { n => n._1 + n._2 }
-      assert(List(0, 1, 1, 2) == fibs.take(4).to(List))
-    }
-
-    var lazeCountS = 0
-    var lazeCountL = 0
-    def lazeL(i: Int) = {lazeCountL += 1; i}
-    def lazeS(i: Int) = {lazeCountS += 1; i}
-    val xs20 = lazeS(1) #:: lazeS(2) #:: lazeS(3) #:: Stream.empty
-    val xs21 = lazeL(1) #:: lazeL(2) #:: lazeL(3) #:: LazyList.empty
-    assert(lazeCountS==lazeCountL)
   }*/
 
   def sortedSets(xs: immutable.SortedSet[Int]): Unit = {
