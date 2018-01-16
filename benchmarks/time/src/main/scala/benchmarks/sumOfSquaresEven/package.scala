@@ -1,12 +1,10 @@
-package strawman.collection
+package benchmarks.sumOfSquaresEven
 
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.infra.Blackhole
-
-import scala.{Any, AnyRef, Int, Long, Unit, math}
-import scala.Predef.intWrapper
+import strawman.collection.immutable
 
 @BenchmarkMode(scala.Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -14,7 +12,7 @@ import scala.Predef.intWrapper
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ListMacro {
+class List {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -45,7 +43,7 @@ class ListMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ScalaListMacro {
+class ScalaList {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -76,7 +74,7 @@ class ScalaListMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class VectorMacro {
+class Vector {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -106,7 +104,7 @@ class VectorMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ScalaVectorMacro {
+class ScalaVector {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -137,7 +135,7 @@ class ScalaVectorMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ImmutableArrayMacro {
+class ImmutableArray {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -167,7 +165,7 @@ class ImmutableArrayMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ArrayMacro {
+class Array {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
@@ -197,7 +195,7 @@ class ArrayMacro {
 @Warmup(iterations = 8)
 @Measurement(iterations = 8)
 @State(Scope.Benchmark)
-class ArrayBaselineMacro {
+class ArrayBaseline {
   @Param(scala.Array("0", "1", "3", "8", "17", "282", "4096", "131070", "7312102"))
   var size: Int = _
 
