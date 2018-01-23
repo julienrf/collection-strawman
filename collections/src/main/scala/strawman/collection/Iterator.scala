@@ -1131,6 +1131,56 @@ trait Iterator[+A] extends IterableOnce[A] { self =>
     */
   def to[C](factory: Factory[A, C]): C = factory.fromSpecific(self)
 
+  /** Copies the elements of this $coll to an array.
+    *  Fills the given array `xs` with values of this $coll.
+    *  Copying will stop once either the end of the current $coll is reached,
+    *  or the end of the target array is reached.
+    *
+    *  @param  xs     the array to fill.
+    *  @tparam B      the type of the elements of the target array.
+    *
+    *  $willNotTerminateInf
+    */
+  def copyToArray[B >: A](xs: Array[B]): Unit = copyToArray(xs, 0, xs.length)
+
+  /** Copies the elements of this $coll to an array.
+    *  Fills the given array `xs` with values of this $coll, beginning at index `start`.
+    *  Copying will stop once either the end of the current $coll is reached,
+    *  or the end of the target array is reached.
+    *
+    *  @param  xs     the array to fill.
+    *  @param  start  the starting index.
+    *  @tparam B      the type of the elements of the target array.
+    *
+    *  $willNotTerminateInf
+    */
+  def copyToArray[B >: A](xs: Array[B], start: Int): Unit = copyToArray(xs, start, xs.length - start)
+
+  /** Copies selected values produced by this iterator to an array.
+   *  Fills the given array `xs` starting at index `start` with at most
+   *  `len` values produced by this iterator.
+   *  Copying will stop once either the end of the current iterator is reached,
+   *  or the end of the array is reached, or `len` elements have been copied.
+   *
+   *  @param  xs     the array to fill.
+   *  @param  start  the starting index.
+   *  @param  len    the maximal number of elements to copy.
+   *  @tparam B      the type of the elements of the array.
+   *
+   *  @note    Reuse: $consumesIterator
+   *
+   *  $willNotTerminateInf
+   */
+  def copyToArray[B >: A](xs: Array[B], start: Int, len: Int): Unit = {
+    var i = start
+    val end = start + math.min(len, xs.length - start)
+    while (i < end && hasNext) {
+      xs(i) = next()
+      i += 1
+    }
+    // TODO: return i - start so the caller knows how many values read?
+  }
+
 }
 
 object Iterator {

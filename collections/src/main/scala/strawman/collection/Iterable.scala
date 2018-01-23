@@ -378,19 +378,52 @@ trait IterableOps[+A, +CC[_], +C] extends Any with IterableOnce[A] {
 
   /** Convert collection to array. */
   def toArray[B >: A: ClassTag]: Array[B] =
-    if (knownSize >= 0) copyToArray(new Array[B](knownSize), 0)
+    if (knownSize >= 0) {
+      val array = new Array[B](knownSize)
+      copyToArray(array)
+      array
+    }
     else ArrayBuffer.from(this).toArray[B]
 
-  /** Copy all elements of this collection to array `xs`, starting at `start`. */
-  def copyToArray[B >: A](xs: Array[B], start: Int = 0): xs.type = {
-    var i = start
-    val it = iterator()
-    while (it.hasNext) {
-      xs(i) = it.next()
-      i += 1
-    }
-    xs
-  }
+  /** Copies the elements of this $coll to an array.
+    *  Fills the given array `xs` with at most `len` elements of
+    *  this $coll, starting at position `start`.
+    *  Copying will stop once either the end of the current $coll is reached,
+    *  or the end of the target array is reached, or `len` elements have been copied.
+    *
+    *  @param  xs     the array to fill.
+    *  @param  start  the starting index.
+    *  @param  len    the maximal number of elements to copy.
+    *  @tparam B      the type of the elements of the target array.
+    *
+    *  $willNotTerminateInf
+    */
+  def copyToArray[B >: A](xs: Array[B], start: Int, len: Int): Unit = iterator().copyToArray(xs, start, len)
+
+  /** Copies the elements of this $coll to an array.
+    *  Fills the given array `xs` with values of this $coll.
+    *  Copying will stop once either the end of the current $coll is reached,
+    *  or the end of the target array is reached.
+    *
+    *  @param  xs     the array to fill.
+    *  @tparam B      the type of the elements of the target array.
+    *
+    *  $willNotTerminateInf
+    */
+  def copyToArray[B >: A](xs: Array[B]): Unit = copyToArray(xs, 0, xs.length)
+
+  /** Copies the elements of this $coll to an array.
+    *  Fills the given array `xs` with values of this $coll, beginning at index `start`.
+    *  Copying will stop once either the end of the current $coll is reached,
+    *  or the end of the target array is reached.
+    *
+    *  @param  xs     the array to fill.
+    *  @param  start  the starting index.
+    *  @tparam B      the type of the elements of the target array.
+    *
+    *  $willNotTerminateInf
+    */
+  def copyToArray[B >: A](xs: Array[B], start: Int): Unit = copyToArray(xs, start, xs.length - start)
 
   /** The class name of this collection. To be used for converting to string.
     *  Collections generally print like this:
