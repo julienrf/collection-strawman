@@ -32,11 +32,11 @@ class ArrayDequeTest {
 //    apply(_.prependAll(Seq(14, 15, 16, 17)))
     apply(_.remove(1, 5))
 //    apply(_.prependAll(Seq.tabulate(100)(identity)))
-    apply(b => b.insertAll(b.length - 5, Seq.tabulate(10)(identity)))
+    apply(b => b.insertAll(b.length - 5, collection.Seq.tabulate(10)(identity)))
     buffer.trimToSize()
-//    apply(_.appendAll(Seq.tabulate(100)(identity)))
-//    apply(_.appendAll(Iterator.tabulate(100)(identity)))
-//    apply(_.prependAll(Vector.tabulate(10)(identity)))
+    apply(_.addAll(collection.Seq.tabulate(100)(identity)))
+    apply(_.addAll(collection.Iterator.tabulate(100)(identity)))
+    apply(_.addAll(collection.immutable.Vector.tabulate(10)(identity)))
 
     (-100 to 100) foreach {i =>
       assert(buffer.splitAt(i) == buffer2.splitAt(i))
