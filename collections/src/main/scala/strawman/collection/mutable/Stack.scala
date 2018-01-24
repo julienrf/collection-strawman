@@ -1,6 +1,8 @@
 package strawman.collection.mutable
 
-import scala._
+import scala.Boolean
+
+import strawman.collection.toNewSeq
 
 /** A stack implements a data structure which allows to store and retrieve
   *  objects in a last-in-first-out (LIFO) fashion.
@@ -27,7 +29,7 @@ class Stack[A] extends ArrayDeque[A] {
     *  @param   elems      the element sequence.
     *  @return the stack with the new elements on top.
     */
-  def push(elem1: A, elem2: A, elems: A*): this.type = push(elem1).push(elem2).pushAll(elems)
+  def push(elem1: A, elem2: A, elems: A*): this.type = push(elem1).push(elem2).pushAll(elems.toStrawman)
 
   /** Push all elements in the given traversable object onto the stack. The
     *  last element in the traversable object will be on top of the new stack.
@@ -35,7 +37,7 @@ class Stack[A] extends ArrayDeque[A] {
     *  @param elems the traversable object.
     *  @return the stack with the new elements on top.
     */
-  def pushAll(elems: strawman.collection.IterableOnce[A]): this.type = elems ++=: this
+  def pushAll(elems: strawman.collection.IterableOnce[A]): this.type = this.prependAll(elems)
 
   /**
     * Removes the top element from this stack and return it

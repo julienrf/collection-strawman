@@ -1,6 +1,8 @@
 package strawman.collection.mutable
 
-import scala._
+import scala.Boolean
+
+import strawman.collection.toNewSeq
 
 /** `Queue` objects implement data structures that allow to
   *  insert and retrieve elements in a first-in-first-out (FIFO) manner.
@@ -26,7 +28,7 @@ class Queue[A] extends ArrayDeque[A] {
     *  @param   elems      the element sequence.
     *  @return this
     */
-  def enqueue(elem1: A, elem2: A, elems: A*): this.type = enqueue(elem1).enqueue(elem2).enqueueAll(elems)
+  def enqueue(elem1: A, elem2: A, elems: A*): this.type = enqueue(elem1).enqueue(elem2).enqueueAll(elems.toStrawman)
 
   /** Enqueues all elements in the given traversable object into the queue. The
     *  last element in the traversable object will be on front of the new queue.
