@@ -5,15 +5,19 @@ import org.scalajs.sbtplugin.cross.CrossProject
 val dotty = settingKey[String]("dotty version")
 dotty in ThisBuild := "0.6.0-RC1"
 
+val scala211 = "2.11.12"
+val scala212 = "2.12.4"
+val scala213 = "2.13.0-M2"
+
 val collectionsScalaVersionSettings = Seq(
-  scalaVersion := "2.13.0-M2",
-  crossScalaVersions := scalaVersion.value :: "2.12.4" :: dotty.value :: Nil
+  scalaVersion := scala213,
+  crossScalaVersions := scala213 :: scala212 :: dotty.value :: Nil
 )
 
 val commonSettings = Seq(
   organization := "ch.epfl.scala",
   version := "0.9.0-SNAPSHOT",
-  scalaVersion := "2.12.4",
+  scalaVersion := scala212,
   scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-language:higherKinds"/*, "-opt:l:classpath"*/),
   scalacOptions ++= {
     if (!isDotty.value)
@@ -143,6 +147,21 @@ val scalacheck = project.in(file("test") / "scalacheck")
       ("org.scalacheck" %% "scalacheck" % "1.13.5" % Test).withDottyCompat()
     )
   )
+
+val `collections-compat` =
+  crossProj("collections-compat", file("collections-compat"))
+    .settings(
+      crossScalaVersions := Seq(scala211, scala212, scala213),
+      unmanagedSourceDirectories in Compile ++= (unmanagedSourceDirectories in Compile).value.map { dir =>
+        CrossVersion.partialVersion(scalaVersion.value) match {
+          case Some((2, 13)) => file(s"${dir.getPath}-2.13")
+          case _             => file(s"${dir.getPath}-2.11-2.12")
+        }
+      }
+    )
+
+val `collections-compat-jvm` = `collections-compat`.jvm
+val `collections-compat-js` = `collections-compat`.js
 
 val timeBenchmark =
   project.in(file("benchmarks/time"))

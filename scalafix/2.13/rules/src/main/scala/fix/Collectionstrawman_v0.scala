@@ -96,10 +96,14 @@ case class Collectionstrawman_v0(index: SemanticdbIndex)
         ctx.replaceTree(t, q"$buffer ++= $collection".syntax)
     }.asPatch
 
+  def replaceMultiMap(ctx: RuleCtx): Patch =
+    ctx.replaceSymbols("scala.collection.mutable.MultiMap" -> "scala.collection.mutable.DeprecatedMultiMap")
+
   override def fix(ctx: RuleCtx): Patch = {
     replaceToList(ctx) +
       replaceSymbols(ctx) +
       replaceTupleZipped(ctx) +
-      replaceCopyToBuffer(ctx)
+      replaceCopyToBuffer(ctx) +
+      replaceMultiMap(ctx)
   }
 }
