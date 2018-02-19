@@ -6,11 +6,13 @@ val dotty = settingKey[String]("dotty version")
 dotty in ThisBuild := "0.6.0-RC1"
 
 val collectionsScalaVersionSettings = Seq(
-  scalaVersion := "2.13.0-M3",
+  scalaVersion := "2.13.0-pre-54f909e", // because of https://github.com/scala/bug/issues/10736
+  scalaBinaryVersion := "2.13.0-M2", // to remove when we switch to M4
   crossScalaVersions := scalaVersion.value :: "2.12.4" :: dotty.value :: Nil
 )
 
 val commonSettings = Seq(
+  resolvers += "scala-integration" at "https://scala-ci.typesafe.com/artifactory/scala-integration/",
   organization := "ch.epfl.scala",
   version := "0.10.0-SNAPSHOT",
   scalaVersion := "2.12.4",
