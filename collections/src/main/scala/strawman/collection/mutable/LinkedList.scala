@@ -56,7 +56,7 @@ private[mutable] final class LinkedList[A]() extends AbstractSeq[A]
     next = this
   }
 
-  def addOne(elem: A): this.type = { append(LinkedList(elem)); this }
+  def addOne(elem: A): this.type = { append(new LinkedList(elem, LinkedList.empty[A])); this }
 
   // Members declared in strawman.collection.mutable.IterableOps
   def filterInPlace(p: A => Boolean): this.type = {
