@@ -22,6 +22,7 @@ trait BitSet extends SortedSet[Int] with BitSetOps[BitSet] {
   override protected[this] def fromSpecificIterable(coll: Iterable[Int]): BitSetC = bitSetFactory.fromSpecific(coll)
   override protected[this] def newSpecificBuilder(): Builder[Int, BitSetC] = bitSetFactory.newBuilder()
   override def empty: BitSetC = bitSetFactory.empty
+  def toSortedSet: SortedSet[Int] = this
 }
 
 object BitSet extends SpecificIterableFactory[Int, BitSet] {
@@ -155,6 +156,9 @@ trait BitSetOps[+C <: BitSet with BitSetOps[C]]
   }
 
   @`inline` final def ^ (other: BitSet): C = xor(other)
+
+  /** Upcasts this `BitSet` to a `SortedSet[Int]` */
+  def toSortedSet: SortedSet[Int]
 
   /**
     * Builds a new bitset by applying a function to all elements of this bitset

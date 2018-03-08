@@ -85,8 +85,6 @@ class BitSet(protected[collection] final var elems: Array[Long])
 
   def get(elem: Int): Option[Int] = if (contains(elem)) Some(elem) else None
 
-  def unconstrained: collection.Set[Int] = this
-
   /** Updates this bitset to the union with another bitset by performing a bitwise "or".
     *
     *  @param   other  the bitset to form the union with.
@@ -138,6 +136,9 @@ class BitSet(protected[collection] final var elems: Array[Long])
     new BitSet(java.util.Arrays.copyOf(elems, elems.length))
 
   def toImmutable: immutable.BitSet = immutable.BitSet.fromBitMask(elems)
+
+  override def toSortedSet: SortedSet[Int] = this
+
 }
 
 object BitSet extends SpecificIterableFactory[Int, BitSet] {

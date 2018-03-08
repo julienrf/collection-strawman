@@ -49,6 +49,9 @@ sealed abstract class BitSet
   /** Update word at index `idx`; enlarge set if `idx` outside range of set.
     */
   protected def updateWord(idx: Int, w: Long): BitSet
+
+  override def toSortedSet: SortedSet[Int] = this
+
 }
 
 /**
