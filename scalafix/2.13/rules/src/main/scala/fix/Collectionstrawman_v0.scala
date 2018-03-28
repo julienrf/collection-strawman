@@ -10,8 +10,6 @@ case class Collectionstrawman_v0(index: SemanticdbIndex)
 
   def replaceSymbols(ctx: RuleCtx): Patch = {
     ctx.replaceSymbols(
-      "scala.Stream" -> "scala.LazyList",
-      "scala.collection.immutable.Stream" -> "scala.collection.immutable.LazyList",
       "scala.Traversable" -> "scala.Iterable",
       "scala.collection.Traversable" -> "scala.collection.Iterable",
       "scala.TraversableOnce" -> "scala.IterableOnce",
